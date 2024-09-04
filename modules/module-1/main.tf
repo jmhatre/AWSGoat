@@ -27,6 +27,10 @@ resource "aws_lambda_function" "react_lambda_app" {
   runtime       = "nodejs14.x"
   role          = aws_iam_role.blog_app_lambda.arn
   depends_on    = [data.archive_file.lambda_zip, null_resource.file_replacement_lambda_react]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -50,6 +54,10 @@ resource "aws_iam_role" "blog_app_lambda" {
   ]
 }
 EOF
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -69,6 +77,10 @@ resource "aws_api_gateway_rest_api" "api" {
     types = [
       "REGIONAL"
     ]
+  }
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -161,6 +173,10 @@ resource "aws_api_gateway_stage" "api" {
   stage_name    = "prod"
   rest_api_id   = aws_api_gateway_rest_api.api.id
   deployment_id = aws_api_gateway_deployment.api.id
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -176,6 +192,10 @@ resource "aws_api_gateway_rest_api" "apiLambda_ba" {
     types = [
       "REGIONAL"
     ]
+  }
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -3094,6 +3114,10 @@ resource "aws_lambda_function" "lambda_ba_data" {
       JWT_SECRET = "T2BYL6#]zc>Byuzu"
     }
   }
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -3117,6 +3141,10 @@ resource "aws_iam_role" "blog_app_lambda_python" {
   ]
 }
 EOF
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -3156,6 +3184,10 @@ resource "aws_iam_policy" "lambda_data_policies" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -3197,6 +3229,8 @@ resource "aws_s3_bucket" "bucket_upload" {
   tags = {
     Name        = "Production bucket"
     Environment = "Prod"
+    owner       = "pritesh"
+    user        = "pchandaliya"
   }
 }
 
@@ -3243,6 +3277,10 @@ resource "aws_s3_bucket_object" "upload_folder_prod" {
   source       = "./resources/s3/webfiles/${each.value}"
   content_type = lookup(local.content_type_map, regex("\\.(?P<extension>[A-Za-z0-9]+)$", each.value).extension, "application/octet-stream")
   depends_on   = [aws_s3_bucket.bucket_upload, null_resource.file_replacement_api_gw]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -3254,6 +3292,8 @@ resource "aws_s3_bucket" "dev" {
   tags = {
     Name        = "Development bucket"
     Environment = "Dev"
+    owner       = "pritesh"
+    user        = "pchandaliya"
   }
 }
 resource "aws_s3_bucket_policy" "allow_access_for_dev" {
@@ -3282,6 +3322,10 @@ resource "aws_s3_bucket_object" "upload_folder_dev" {
   source       = "./resources/s3/webfiles/build/${each.value}"
   content_type = lookup(local.content_type_map, regex("\\.(?P<extension>[A-Za-z0-9]+)$", each.value).extension, "application/octet-stream")
   depends_on   = [aws_s3_bucket.dev, null_resource.file_replacement_ec2_ip]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_s3_bucket_object" "upload_folder_dev_2" {
   for_each     = fileset("./resources/s3/shared/", "**")
@@ -3291,6 +3335,10 @@ resource "aws_s3_bucket_object" "upload_folder_dev_2" {
   source       = "./resources/s3/shared/${each.value}"
   content_type = lookup(local.content_type_map, regex("\\.(?P<extension>[A-Za-z0-9]+)$", each.value).extension, "application/octet-stream")
   depends_on   = [aws_s3_bucket.dev, null_resource.file_replacement_ec2_ip]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -3303,6 +3351,8 @@ resource "aws_s3_bucket" "bucket_temp" {
   tags = {
     Name        = "Temporary bucket"
     Environment = "Dev"
+    owner       = "pritesh"
+    user        = "pchandaliya"
   }
 }
 
@@ -3315,6 +3365,10 @@ resource "aws_s3_bucket_object" "upload_temp_object" {
   source       = "./resources/s3/webfiles/build/${each.value}"
   content_type = lookup(local.content_type_map, regex("\\.(?P<extension>[A-Za-z0-9]+)$", each.value).extension, "application/octet-stream")
   depends_on   = [aws_s3_bucket.bucket_upload, null_resource.file_replacement_lambda_react]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_s3_bucket_object" "upload_temp_object_2" {
   for_each     = fileset("./resources/s3/shared/", "**")
@@ -3324,6 +3378,10 @@ resource "aws_s3_bucket_object" "upload_temp_object_2" {
   source       = "./resources/s3/shared/${each.value}"
   content_type = lookup(local.content_type_map, regex("\\.(?P<extension>[A-Za-z0-9]+)$", each.value).extension, "application/octet-stream")
   depends_on   = [aws_s3_bucket.bucket_upload, null_resource.file_replacement_lambda_react]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 /* Creating a S3 Bucket for Terraform state file upload. */
@@ -3333,6 +3391,8 @@ resource "aws_s3_bucket" "bucket_tf_files" {
   tags = {
     Name        = "Do not delete Bucket"
     Environment = "Dev"
+    owner       = "pritesh"
+    user        = "pchandaliya"
   }
 }
 
@@ -3344,13 +3404,17 @@ resource "aws_vpc" "goat_vpc" {
   instance_tenancy     = "default"
   enable_dns_hostnames = true
   tags = {
-    Name = "AWS_GOAT_VPC"
+    Name  = "AWS_GOAT_VPC"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 resource "aws_internet_gateway" "goat_gw" {
   vpc_id = aws_vpc.goat_vpc.id
   tags = {
-    Name = "app gateway"
+    Name  = "app gateway"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 resource "aws_subnet" "goat_subnet" {
@@ -3359,7 +3423,9 @@ resource "aws_subnet" "goat_subnet" {
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
   tags = {
-    Name = "AWS_GOAT App subnet"
+    Name  = "AWS_GOAT App subnet"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -3368,6 +3434,10 @@ resource "aws_route_table" "goat_rt" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.goat_gw.id
+  }
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 resource "aws_route_table_association" "goat_public_rta" {
@@ -3393,7 +3463,9 @@ resource "aws_security_group" "goat_sg" {
   }
 
   tags = {
-    Name = "AWS_GOAT_sg"
+    Name  = "AWS_GOAT_sg"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -3402,6 +3474,10 @@ resource "aws_security_group" "goat_sg" {
 resource "aws_iam_instance_profile" "goat_iam_profile" {
   name = "AWS_GOAT_ec2_profile"
   role = aws_iam_role.goat_role.name
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_iam_role" "goat_role" {
   name               = "AWS_GOAT_ROLE"
@@ -3421,6 +3497,10 @@ resource "aws_iam_role" "goat_role" {
     ]
 }
 EOF
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_iam_role_policy_attachment" "goat_s3_policy" {
   role       = aws_iam_role.goat_role.name
@@ -3483,6 +3563,10 @@ resource "aws_iam_policy" "goat_inline_policy_2" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 data "template_file" "goat_script" {
@@ -3514,7 +3598,9 @@ resource "aws_instance" "goat_instance" {
   subnet_id            = aws_subnet.goat_subnet.id
   security_groups      = [aws_security_group.goat_sg.id]
   tags = {
-    Name = "AWS_GOAT_DEV_INSTANCE"
+    Name  = "AWS_GOAT_DEV_INSTANCE"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
   user_data = data.template_file.goat_script.rendered
   depends_on = [
@@ -3534,6 +3620,10 @@ resource "aws_dynamodb_table" "users_table" {
     name = "email"
     type = "S"
   }
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_dynamodb_table" "posts_table" {
   name           = "blog-posts"
@@ -3545,6 +3635,10 @@ resource "aws_dynamodb_table" "posts_table" {
   attribute {
     name = "id"
     type = "S"
+  }
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 

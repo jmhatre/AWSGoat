@@ -23,7 +23,9 @@ resource "aws_vpc" "lab-vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "AWS_GOAT_VPC"
+    Name  = "AWS_GOAT_VPC"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 resource "aws_subnet" "lab-subnet-public-1" {
@@ -31,11 +33,17 @@ resource "aws_subnet" "lab-subnet-public-1" {
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
   availability_zone       = data.aws_availability_zones.available.names[0]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_internet_gateway" "my_vpc_igw" {
   vpc_id = aws_vpc.lab-vpc.id
   tags = {
-    Name = "My VPC - Internet Gateway"
+    Name  = "My VPC - Internet Gateway"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 resource "aws_route_table" "my_vpc_us_east_1_public_rt" {
@@ -46,7 +54,9 @@ resource "aws_route_table" "my_vpc_us_east_1_public_rt" {
   }
 
   tags = {
-    Name = "Public Subnet Route Table."
+    Name  = "Public Subnet Route Table."
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -59,6 +69,10 @@ resource "aws_subnet" "lab-subnet-public-1b" {
   cidr_block              = "10.0.128.0/24"
   availability_zone       = data.aws_availability_zones.available.names[1]
   map_public_ip_on_launch = true
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_route_table_association" "my_vpc_us_east_1b_public" {
   subnet_id      = aws_subnet.lab-subnet-public-1b.id
@@ -83,6 +97,10 @@ resource "aws_security_group" "ecs_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 # Create Database Subnet Group
@@ -93,7 +111,9 @@ resource "aws_db_subnet_group" "database-subnet-group" {
   description = "Subnets for Database Instance"
 
   tags = {
-    Name = "Database Subnets"
+    Name  = "Database Subnets"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -121,7 +141,9 @@ resource "aws_security_group" "database-security-group" {
   }
 
   tags = {
-    Name = "rds-db-sg"
+    Name  = "rds-db-sg"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 
 }
@@ -141,6 +163,10 @@ resource "aws_db_instance" "database-instance" {
   availability_zone      = "us-east-1a"
   db_subnet_group_name   = aws_db_subnet_group.database-subnet-group.name
   vpc_security_group_ids = [aws_security_group.database-security-group.id]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -164,7 +190,9 @@ resource "aws_security_group" "load_balancer_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "aws-goat-m2-sg"
+    Name  = "aws-goat-m2-sg"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -187,6 +215,10 @@ resource "aws_iam_role" "ecs-instance-role" {
       }
     ]
   })
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 
@@ -222,6 +254,10 @@ resource "aws_iam_policy" "ecs_instance_policy" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 resource "aws_iam_policy" "instance_boundary_policy" {
@@ -250,12 +286,20 @@ resource "aws_iam_policy" "instance_boundary_policy" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 resource "aws_iam_instance_profile" "ec2-deployer-profile" {
   name = "ec2Deployer"
   path = "/"
   role = aws_iam_role.ec2-deployer-role.id
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_iam_role" "ec2-deployer-role" {
   name = "ec2Deployer-role"
@@ -273,6 +317,10 @@ resource "aws_iam_role" "ec2-deployer-role" {
       }
     ]
   })
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 resource "aws_iam_policy" "ec2_deployer_admin_policy" {
@@ -290,6 +338,10 @@ resource "aws_iam_policy" "ec2_deployer_admin_policy" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ec2-deployer-role-attachment" {
@@ -301,6 +353,10 @@ resource "aws_iam_instance_profile" "ecs-instance-profile" {
   name = "ecs-instance-profile"
   path = "/"
   role = aws_iam_role.ecs-instance-role.id
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 resource "aws_iam_role" "ecs-task-role" {
   name = "ecs-task-role"
@@ -319,6 +375,10 @@ resource "aws_iam_role" "ecs-task-role" {
     ]
     }
   )
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs-task-role-attachment" {
@@ -368,7 +428,9 @@ resource "aws_ecs_cluster" "cluster" {
   name = "ecs-lab-cluster"
 
   tags = {
-    name = "ecs-cluster-name"
+    name  = "ecs-cluster-name"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -377,8 +439,8 @@ data "template_file" "user_data" {
 }
 
 resource "aws_ecs_task_definition" "task_definition" {
-  container_definitions = data.template_file.task_definition_json.rendered
-  family                = "ECS-Lab-Task-definition"
+  container_definitions    = data.template_file.task_definition_json.rendered
+  family                   = "ECS-Lab-Task-definition"
   network_mode             = "bridge"
   memory                   = "512"
   cpu                      = "512"
@@ -393,6 +455,10 @@ resource "aws_ecs_task_definition" "task_definition" {
   volume {
     name      = "kernels"
     host_path = "/usr/src/kernels"
+  }
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -418,6 +484,10 @@ resource "aws_ecs_service" "worker" {
     container_port   = 80
   }
   depends_on = [aws_lb_listener.listener]
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 resource "aws_alb" "application_load_balancer" {
@@ -428,7 +498,9 @@ resource "aws_alb" "application_load_balancer" {
   security_groups    = [aws_security_group.load_balancer_security_group.id]
 
   tags = {
-    Name = "aws-goat-m2-alb"
+    Name  = "aws-goat-m2-alb"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -440,7 +512,9 @@ resource "aws_lb_target_group" "target_group" {
   vpc_id      = aws_vpc.lab-vpc.id
 
   tags = {
-    Name = "aws-goat-m2-tg"
+    Name  = "aws-goat-m2-tg"
+    owner = "pritesh"
+    user  = "pchandaliya"
   }
 }
 
@@ -459,6 +533,10 @@ resource "aws_lb_listener" "listener" {
 resource "aws_secretsmanager_secret" "rds_creds" {
   name                    = "RDS_CREDS"
   recovery_window_in_days = 0
+  tags = {
+    owner = "pritesh"
+    user  = "pchandaliya"
+  }
 }
 
 resource "aws_secretsmanager_secret_version" "secret_version" {
@@ -509,6 +587,8 @@ resource "aws_s3_bucket" "bucket_tf_files" {
   tags = {
     Name        = "Do not delete Bucket"
     Environment = "Dev"
+    owner       = "pritesh"
+    user        = "pchandaliya"
   }
 }
 
